@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Código QR</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: navy;
+        color: white;
+        margin: 0;
+        padding: 0;
+    }
+    form {
+        margin-top: 50px;
+    }
+    #qrCodeContainer {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+    #qrCode {
+    max-width: 300px; /* Establece un ancho máximo para el código QR */
+    margin: 0 auto; /* Aplica márgenes automáticos para centrar horizontalmente */
+}
+
+    }
+    #successMessage {
+        display: none;
+        color: green;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    h1 {
+        margin-top: 50px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Genera tu QR</h1>
+
+<form id="dataForm">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" required pattern="[A-Za-zÁÉÍÓÚáéíóúñ\s]+" ><br><br>
+    
+    <label for="universidad">Universidad:</label>
+    <input type="text" id="universidad" required pattern="[A-Za-zÁÉÍÓÚáéíóúñ\s]+" ><br><br>
+    
+    <label for="numCuenta">Número de Cuenta:</label>
+    <input type="text" id="numCuenta" required><br><br>
+    
+    <label for="telefono">Número de Teléfono:</label>
+    <input type="tel" id="telefono" required><br><br>
+    
+    <input type="submit" value="Generar Código QR">
+</form>
+
+<div id="qrCodeContainer">
+    <h2>Código QR</h2>
+    <div id="qrCode"></div>
+    <button id="downloadBtn">Descargar Código QR</button>
+</div>
+
+<div id="successMessage">¡Código QR generado con éxito!</div>
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script>
+    document.getElementById('dataForm').onsubmit = function(event) {
+        event.preventDefault();
+        
+        var nombre = document.getElementById('nombre').value;
+        var universidad = document.getElementById('universidad').value;
+        var numCuenta = document.getElementById('numCuenta').value;
+        var telefono = document.getElementById('telefono').value;
+        
+        var data = {
+            nombre: nombre,
+            universidad: universidad,
+            numCuenta: numCuenta,
+            telefono: telefono
+        };
+        
+        // Codificar los datos como cadena JSON
+        var jsonData = JSON.stringify(data);
+        
+        // Generar el código QR
+        var qrCodeDiv = document.getElementById('qrCode');
+        new QRCode(qrCodeDiv, jsonData);
+        
+
+        // Mostrar el contenedor del código QR y el mensaje de éxito
+        document.getElementById('qrCodeContainer').style.display = 'block';
+        document.getElementById('successMessage').style.display = 'block';
+    };
+    
+    // Función para descargar el código QR como imagen
+    document.getElementById('downloadBtn').onclick = function() {
+        var qrCodeImage = document.getElementById('qrCode').querySelector('img');
+        var qrCodeDataURL = qrCodeImage.src;
+        
+        var downloadLink = document.createElement('a');
+        downloadLink.href = qrCodeDataURL;
+        downloadLink.download = 'codigo_qr.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
+</script>
+
+</body>
+</html>
